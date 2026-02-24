@@ -1,0 +1,51 @@
+---
+// src/components/Testimonios.astro
+
+// Datos de ejemplo. En un futuro, esto podría venir de un CMS o una API.
+const testimonios = [
+  {
+    nombre: "Javier M.",
+    ciudad: "Posadas",
+    testimonio: "¡Increíble la calidad de los botines! El envío fue súper rápido y la atención por WhatsApp de primera. 100% recomendados.",
+  },
+  {
+    nombre: "Lucía G.",
+    ciudad: "Posadas",
+    testimonio: "Compré desde la web y todo el proceso fue muy fácil. Los talles son exactos como dice la guía. ¡Feliz con mi compra!",
+  },
+  {
+    nombre: "Marcos R.",
+    ciudad: "Posadas",
+    testimonio: "Excelente variedad de modelos que no se encuentran en otros lados. La calidad es profesional. Volveré a comprar seguro.",
+  },
+];
+---
+
+<section class="bg-white py-16 sm:py-24">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="text-center mb-12">
+      <h2 class="text-3xl font-extrabold tracking-tight text-gray-900 sm:text-4xl">
+        Lo que dicen nuestros clientes
+      </h2>
+      <p class="mt-4 max-w-2xl mx-auto text-lg text-gray-500">
+        Nos enorgullece la confianza y satisfacción de quienes nos eligen.
+      </p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      {testimonios.map((item) => (
+        <div class="flex flex-col bg-gray-50 border border-gray-100 rounded-2xl p-6 shadow-sm transition-all hover:shadow-lg hover:-translate-y-1">
+          <i class="ph ph-quotes text-3xl text-orange-500 mb-4"></i>
+          <p class="text-gray-600 italic flex-1">"{item.testimonio}"</p>
+          <p class="font-bold text-gray-900 mt-6">{item.nombre} <span class="font-normal text-gray-500">- {item.ciudad}</span></p>
+        </div>
+      ))}
+    </div>
+    <div class="text-center mt-12">
+        <a href="https://www.instagram.com/gambastore_/highlights/" target="_blank" class="inline-flex items-center gap-2 text-orange-600 font-medium hover:text-orange-800 transition-colors">
+            Ver más en Instagram
+            <i class="ph ph-arrow-right"></i>
+        </a>
+    </div>
+  </div>
+</section>

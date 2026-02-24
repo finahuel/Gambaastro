@@ -1,0 +1,212 @@
+---
+import Layout1 from '../layouts/layout1.astro';
+import Navbar from '../components/Navbar.astro';
+import Hero from '../components/Hero.astro';
+import WhatsAppButton from '../components/WhatsAppButton.astro';
+import FichaProducto from '../components/FichaProducto.astro';
+import { getProducts } from '../services/products';
+
+// Tipos para window
+declare global {
+  interface Window {
+    openModal: (id: number | string) => void;
+    closeModal: () => void;
+    openFullscreen: () => void;
+    closeFullscreen: () => void;
+    applyFilters: () => void;
+    clearFilters: () => void;
+    renderCarsGrid: (cars: any[]) => void;
+    openSellModal: () => void;
+    closeSellModal: () => void;
+    toggleMobileMenu: () => void;
+    closeMobileMenu: () => void;
+  }
+}
+
+// URL de la imagen de fondo del encabezado (Puedes cambiarla aquí o usar una local tipo '/fondo-productos.jpg')
+const HEADER_BG_IMAGE = "https://images.unsplash.com/photo-1556906781-9a412961c28c?q=80&w=2070&auto=format&fit=crop";
+
+// 2. Fetch y Transformación de datos
+// Usamos el servicio centralizado
+const productos = await getProducts();
+
+// 3. Extraer Categorías y Talles únicos para los filtros
+const categoriasUnicas = [...new Set(productos.map(p => p.categoria).filter(Boolean))].sort();
+
+// Para los talles, primero aplanamos el array (flatMap), quitamos duplicados y ordenamos
+const tallesUnicos = [...new Set(productos.flatMap(p => p.talles))].sort((a, b) => {
+  // Intento de ordenamiento numérico (para que 10 no quede antes que 2)
+  const numA = parseFloat(a);
+  const numB = parseFloat(b);
+  if (!isNaN(numA) && !isNaN(numB)) return numA - numB;
+  return a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' });
+});
+---
+
+<Layout1
+ title="Catálogo de Productos | Gamba Store">
+  <Navbar title="Gamba Store"/>
+  
+  <!-- Encabezado con Imagen de Fondo y Buscador -->
+  <div class="relative bg-gray-900 py-24 sm:py-32">
+    <div class="absolute inset-0 overflow-hidden">
+      <img 
+        src={HEADER_BG_IMAGE} 
+        alt="Fondo productos" 
+        class="h-full w-full object-cover object-center opacity-40"
+      />
+      <div class="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/40"></div>
+    </div>
+
+    <div class="relative mx-auto max-w-7xl px-6 lg:px-8 text-center">
+      <h1 class="text-4xl font-extrabold tracking-tight text-white sm:text-6xl uppercase italic">
+        Nuestros Productos
+      </h1>
+      <p class="mt-4 text-lg leading-8 text-gray-300">
+        Encuentra tu estilo perfecto entre nuestra selección exclusiva.
+      </p>
+
+      <!-- Barra de Buscador y Filtros -->
+      <div class="mt-10 max-w-4xl mx-auto bg-white/10 backdrop-blur-md p-4 rounded-2xl border border-white/20 shadow-xl">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          
+          <!-- Buscador por Nombre -->
+          <div class="relative">
+            <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+              <i class="ph ph-magnifying-glass text-gray-400 text-xl"></i>
+            </div>
+            <input 
+              type="text" 
+              id="searchInput" 
+              placeholder="Buscar marca o modelo..." 
+              class="block w-full rounded-lg border-0 bg-white/90 py-3 pl-10 text-gray-900 placeholder:text-gray-500 focus:ring-2 focus:ring-inset focus:ring-orange-500 sm:text-sm sm:leading-6"
+            >
+          </div>
+
+          <!-- Filtro Categoría -->
+          <div class="relative">
+            <select id="categorySelect" class="block w-full rounded-lg border-0 bg-white/90 py-3 pl-3 pr-10 text-gray-900 focus:ring-2 focus:ring-inset focus:ring-orange-500 sm:text-sm sm:leading-6 cursor-pointer">
+              <option value="">Todas las Categorías</option>
+              {categoriasUnicas.map(cat => (
+                <option value={cat}>{cat}</option>
+              ))}
+            </select>
+          </div>
+
+          <!-- Filtro Talle -->
+          <div class="relative">
+            <select id="sizeSelect" class="block w-full rounded-lg border-0 bg-white/90 py-3 pl-3 pr-10 text-gray-900 focus:ring-2 focus:ring-inset focus:ring-orange-500 sm:text-sm sm:leading-6 cursor-pointer">
+              <option value="">Todos los Talles</option>
+              {tallesUnicos.map(talle => (
+                <option value={talle}>Talle {talle}</option>
+              ))}
+            </select>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <section class="py-12 px-4 mx-auto max-w-7xl">
+    
+    <div id="productsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+      {
+        productos.map((prod) => (
+          <div 
+            class="product-item transition-all duration-300"
+            data-search={`${prod.marca} ${prod.modelo}`.toLowerCase()}
+            data-category={prod.categoria}
+            data-sizes={prod.talles.join(',')}
+          >
+            <FichaProducto 
+              id={prod.id}
+              marca={prod.marca}
+              modelo={prod.modelo}
+              precio={prod.precio}
+              imagen={prod.imagen}
+              categoria={prod.categoria}
+              talles={prod.talles}
+              colores={prod.colores}
+              estado={prod.estado}
+              precioOferta={prod.precioOferta}
+            />
+          </div>
+        ))
+      }
+      
+      <!-- Mensaje cuando no hay resultados -->
+      <div id="noResultsMessage" class="hidden col-span-full text-center py-20">
+        <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gray-100 mb-4">
+          <i class="ph ph-magnifying-glass text-3xl text-gray-400"></i>
+        </div>
+        <h3 class="text-lg font-medium text-gray-900">No encontramos productos</h3>
+        <p class="mt-2 text-gray-500">Intenta con otra categoría o término de búsqueda.</p>
+        <button id="clearFiltersBtn" class="mt-4 text-orange-600 font-semibold hover:text-orange-500 cursor-pointer">
+          Limpiar filtros
+        </button>
+      </div>
+    </div>
+
+  </section>
+  <WhatsAppButton phone="5493764102637" message="Hola!%20Quisiera%20hacer%20una%20consulta." />
+</Layout>
+
+<script>
+  // @ts-nocheck
+  // Lógica de Filtrado en el Cliente
+  const searchInput = document.getElementById('searchInput');
+  const categorySelect = document.getElementById('categorySelect');
+  const sizeSelect = document.getElementById('sizeSelect');
+  const productItems = document.querySelectorAll('.product-item');
+  const noResultsMessage = document.getElementById('noResultsMessage');
+  const clearFiltersBtn = document.getElementById('clearFiltersBtn');
+
+  function filterProducts() {
+    const searchText = searchInput.value.toLowerCase();
+    const selectedCategory = categorySelect.value;
+    const selectedSize = sizeSelect.value;
+    let hasVisibleItems = false;
+
+    productItems.forEach((item) => {
+      const element = item;
+      
+      // Obtener datos del elemento
+      const itemSearchText = element.dataset.search || '';
+      const itemCategory = element.dataset.category || '';
+      const itemSizes = (element.dataset.sizes || '').split(',');
+
+      // Verificar condiciones
+      const matchesSearch = itemSearchText.includes(searchText);
+      const matchesCategory = selectedCategory === '' || itemCategory === selectedCategory;
+      const matchesSize = selectedSize === '' || itemSizes.includes(selectedSize);
+
+      // Mostrar u ocultar
+      if (matchesSearch && matchesCategory && matchesSize) {
+        element.classList.remove('hidden');
+        hasVisibleItems = true;
+      } else {
+        element.classList.add('hidden');
+      }
+    });
+
+    // Mostrar mensaje si no hay items visibles
+    if (noResultsMessage) {
+      if (!hasVisibleItems) noResultsMessage.classList.remove('hidden');
+      else noResultsMessage.classList.add('hidden');
+    }
+  }
+
+  // Escuchar eventos
+  searchInput?.addEventListener('input', filterProducts);
+  categorySelect?.addEventListener('change', filterProducts);
+  sizeSelect?.addEventListener('change', filterProducts);
+
+  // Lógica para el botón de limpiar filtros
+  clearFiltersBtn?.addEventListener('click', () => {
+    if (searchInput) searchInput.value = '';
+    if (categorySelect) categorySelect.value = '';
+    if (sizeSelect) sizeSelect.value = '';
+    filterProducts(); // Re-ejecutar el filtro para mostrar todo
+  });
+</script>

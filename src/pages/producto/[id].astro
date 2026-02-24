@@ -1,0 +1,264 @@
+---
+import Layout1 from '../../layouts/layout1.astro';
+import Navbar from '../../components/Navbar.astro';
+import WhatsAppButton from '../../components/WhatsAppButton.astro';
+import FichaProducto from '../../components/FichaProducto.astro';
+// Nota los dos puntos (../../) para salir de la carpeta 'producto' y 'pages'
+import { getProducts } from '../../services/products';
+
+// Generamos las rutas estáticas para cada producto
+export async function getStaticPaths() {
+  const productos = await getProducts();
+
+  return productos.map((producto) => {
+    return {
+      params: { id: producto.id },
+      props: { producto }
+    };
+  });
+}
+
+const { producto } = Astro.props;
+
+const formatCurrency = (amount: number) => {
+  return new Intl.NumberFormat('es-AR', {
+    style: 'currency',
+    currency: 'ARS',
+    minimumFractionDigits: 0,
+  }).format(amount);
+};
+
+const precioFinalFormateado = formatCurrency(producto.precioOferta && producto.precioOferta > 0 ? producto.precioOferta : producto.precio);
+const precioOriginalFormateado = producto.precioOferta && producto.precioOferta > 0 ? formatCurrency(producto.precio) : null;
+
+// Mensaje para WhatsApp
+const mensajeWsp = `Hola! Me interesa el producto ${producto.marca} ${producto.modelo}.`;
+
+// Lógica para productos relacionados: misma categoría, excluyendo el actual
+const allProducts = await getProducts();
+let relatedProducts = allProducts
+  .filter(p => p.categoria === producto.categoria && p.id !== producto.id);
+
+// Si no llegamos a 4 productos de la misma categoría, rellenamos con otros
+if (relatedProducts.length < 4) {
+  const otherProducts = allProducts.filter(p => p.categoria !== producto.categoria && p.id !== producto.id);
+  relatedProducts = [...relatedProducts, ...otherProducts];
+}
+
+relatedProducts = relatedProducts.slice(0, 4);
+---
+
+<Layout1 title={`${producto.marca} ${producto.modelo} | Gamba Store`}>
+  <!-- Fondo oscuro simulado detrás del navbar para contraste -->
+  <div class="absolute top-0 left-0 w-full h-20 bg-gray-900 z-40"></div>
+  <Navbar title="Gamba Store" />
+  
+  <main class="pt-24 pb-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+    
+    <!-- Breadcrumbs (Migas de Pan) -->
+    <nav class="flex mb-8 text-sm text-gray-500" aria-label="Breadcrumb">
+      <ol class="inline-flex items-center space-x-1 md:space-x-3">
+        <li class="inline-flex items-center"><a href="/" class="hover:text-orange-600">Inicio</a></li>
+        <li><i class="ph ph-caret-right"></i></li>
+        <li><a href="/productos" class="hover:text-orange-600">Productos</a></li>
+        <li><i class="ph ph-caret-right"></i></li>
+        <li class="font-medium text-gray-900" aria-current="page">{producto.modelo}</li>
+      </ol>
+    </nav>
+
+    <div class="lg:grid lg:grid-cols-2 lg:gap-x-12 xl:gap-x-16">
+      
+      <!-- Columna Izquierda: Imagen -->
+      <div class="product-image-container relative aspect-square rounded-2xl overflow-hidden bg-white border border-gray-100 shadow-sm mb-8 lg:mb-0">
+        <img 
+          src={producto.imagen} 
+          alt={`${producto.marca} ${producto.modelo}`} 
+          class="h-full w-full object-cover object-center"
+        />
+        {producto.estado && (
+          <span class="absolute top-4 left-4 rounded-md bg-orange-500 px-3 py-1.5 text-sm font-bold uppercase tracking-wider text-white shadow-md">
+            {producto.estado}
+          </span>
+        )}
+      </div>
+
+      <!-- Columna Derecha: Detalles -->
+      <div class="flex flex-col justify-center">
+        <div class="mb-2">
+          <span class="text-sm font-bold text-orange-600 uppercase tracking-wider">{producto.marca}</span>
+          <span class="mx-2 text-gray-300">|</span>
+          <span class="text-sm text-gray-500 uppercase">{producto.categoria}</span>
+        </div>
+
+        <h1 class="text-3xl font-extrabold tracking-tight text-gray-900 sm:text-4xl mb-4">
+          {producto.modelo}
+        </h1>
+
+        {precioOriginalFormateado ? (
+          <div class="flex items-baseline gap-x-3 mb-6">
+            <p class="text-3xl font-bold text-gray-900">{precioFinalFormateado}</p>
+            <p class="text-xl font-medium text-gray-400 line-through">
+              {precioOriginalFormateado}
+            </p>
+          </div>
+        ) : (
+          <p class="text-3xl font-bold text-gray-900 mb-6">
+            {precioFinalFormateado}
+          </p>
+        )}
+
+        <div class="prose prose-sm text-gray-500 mb-8">
+          <p>{producto.detalle}</p>
+        </div>
+
+        <!-- Selector de Colores -->
+        {producto.colores.length > 0 && (
+          <div class="mb-6">
+            <h3 class="text-sm font-medium text-gray-900 mb-3">Colores Disponibles</h3>
+            <div class="flex items-center space-x-3">
+              {producto.colores.map((color, index) => (
+                <label class="relative -m-0.5 flex cursor-pointer items-center justify-center rounded-full p-0.5 focus:outline-none ring-gray-400 hover:ring-2 color-selector">
+                  <input type="radio" name="color-choice" value={color} class="sr-only" />
+                  <span 
+                    class="h-8 w-8 rounded-full border border-black/10 shadow-sm" 
+                    style={`background-color: ${color}`}
+                    title={color}
+                  ></span>
+                  <!-- Anillo de selección -->
+                  <span class="pointer-events-none absolute -inset-1 rounded-full border-2 border-transparent peer-checked:border-orange-500" aria-hidden="true"></span>
+                </label>
+              ))}
+            </div>
+          </div>
+        )}
+
+        <!-- Selector de Talles -->
+        {producto.talles.length > 0 && (
+          <div class="mb-8">
+            <div class="flex items-center justify-between mb-3">
+              <h3 class="text-sm font-medium text-gray-900">Seleccionar Talle</h3>
+              
+            </div>
+            <div class="grid grid-cols-4 gap-3 sm:grid-cols-6">
+              {producto.talles.map((talle, index) => (
+                <label class="group relative flex items-center justify-center rounded-md border py-3 px-3 text-sm font-medium uppercase hover:bg-gray-50 focus:outline-none sm:flex-1 cursor-pointer bg-white text-gray-900 shadow-sm border-gray-200 size-selector">
+                  <input type="radio" name="size-choice" value={talle} class="sr-only peer" />
+                  <span>{talle}</span>
+                  <span class="pointer-events-none absolute -inset-px rounded-md border-2 border-transparent group-hover:border-orange-200 peer-checked:border-orange-500" aria-hidden="true"></span>
+                </label>
+              ))}
+            </div>
+          </div>
+        )}
+
+          <div id="error-message" class="hidden mb-4 p-3 bg-red-50 text-red-700 text-sm rounded-md border border-red-200">
+          Por favor selecciona un talle y un color.
+        </div>
+
+        <!-- Selector de Cantidad -->
+        <div class="flex items-center mb-6">
+          <span class="mr-3 text-sm font-medium text-gray-900">Cantidad:</span>
+          <div class="flex items-center border border-gray-300 rounded-md">
+            <button id="decreaseQty" class="px-3 py-1 text-gray-600 hover:bg-gray-100 transition-colors cursor-pointer">-</button>
+            <span id="qtyDisplay" class="px-3 py-1 text-gray-900 font-medium min-w-[2rem] text-center">1</span>
+            <button id="increaseQty" class="px-3 py-1 text-gray-600 hover:bg-gray-100 transition-colors cursor-pointer">+</button>
+          </div>
+        </div>
+
+        <!-- Botón de Acción -->
+        <div class="flex gap-4">
+          <button 
+            id="addToCartBtn"
+            class="flex-1 flex items-center justify-center rounded-full border border-transparent bg-black px-8 py-4 text-base font-bold text-white hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 transition-all hover:scale-[1.02] cursor-pointer"
+          >
+            <i class="ph ph-shopping-cart text-xl mr-2"></i>
+            Agregar al Carrito
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sección de Productos Relacionados -->
+    {relatedProducts.length > 0 && (
+      <div class="mt-16 border-t border-gray-200 pt-16">
+        <h2 class="text-2xl font-bold tracking-tight text-gray-900 mb-8">También te podría interesar</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          {relatedProducts.map((p) => (
+            <FichaProducto {...p} />
+          ))}
+        </div>
+      </div>
+    )}
+  </main>
+  <WhatsAppButton phone="5493764102637" message={mensajeWsp} />
+</Layout1>
+
+<script define:vars={{ producto }}>
+  // @ts-nocheck
+  // Lógica para agregar al carrito
+  const addToCartBtn = document.getElementById('addToCartBtn');
+  const errorMessage = document.getElementById('error-message');
+  const qtyDisplay = document.getElementById('qtyDisplay');
+  const decreaseQty = document.getElementById('decreaseQty');
+  const increaseQty = document.getElementById('increaseQty');
+  
+  let quantity = 1;
+
+  decreaseQty?.addEventListener('click', () => {
+    if (quantity > 1) { quantity--; if(qtyDisplay) qtyDisplay.innerText = quantity; }
+  });
+  increaseQty?.addEventListener('click', () => {
+    quantity++; if(qtyDisplay) qtyDisplay.innerText = quantity;
+  });
+
+  addToCartBtn?.addEventListener('click', () => {
+    // Obtener valores seleccionados
+    const selectedSize = document.querySelector('input[name="size-choice"]:checked')?.value;
+    const selectedColor = document.querySelector('input[name="color-choice"]:checked')?.value;
+
+    // Validar si el producto tiene opciones y si fueron seleccionadas
+    const hasSizes = producto.talles && producto.talles.length > 0;
+    const hasColors = producto.colores && producto.colores.length > 0;
+
+    if ((hasSizes && !selectedSize) || (hasColors && !selectedColor)) {
+      errorMessage?.classList.remove('hidden');
+      // Pequeña animación de shake
+      addToCartBtn.classList.add('animate-pulse');
+      setTimeout(() => addToCartBtn.classList.remove('animate-pulse'), 500);
+      return;
+    }
+
+    errorMessage?.classList.add('hidden');
+
+    const finalPrice = producto.precioOferta && producto.precioOferta > 0 ? producto.precioOferta : producto.precio;
+
+    // Crear objeto del item
+    const cartItem = {
+      id: producto.id,
+      name: producto.modelo,
+      brand: producto.marca,
+      price: finalPrice,
+      image: producto.imagen,
+      size: selectedSize || null,
+      color: selectedColor || null,
+      quantity: quantity
+    };
+
+    // Disparar evento global para que el CartFlyout lo capture
+    window.dispatchEvent(new CustomEvent('addToCart', { detail: cartItem }));
+  });
+</script>
+
+<style>
+  /* Estilos adicionales para inputs radio */
+  input[type="radio"]:checked + span {
+    ring-width: 2px;
+    ring-color: #f97316;
+  }
+  
+  /* Estilo para el anillo de color seleccionado */
+  .color-selector input:checked ~ span:last-child {
+    border-color: #f97316; /* orange-500 */
+    border-width: 2px;
+  }
+</style>

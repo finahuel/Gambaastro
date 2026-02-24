@@ -1,0 +1,44 @@
+---
+import '../styles/global.css';
+import CartFlyout from '../components/CartFlyout.astro';
+import Footer from '../components/Footer.astro';
+
+interface Props {
+	title?: string;
+}
+
+const { title = "Gamba Store | Botines" } = Astro.props;
+---
+
+
+<!doctype html>
+<html lang="es" class="scroll-smooth">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>{title}</title>
+		<link rel="icon" type="image/png" sizes="32x32" href="/public/favicon-32x32.png" />
+		<link rel="shortcut icon" href="/public/favicon.ico" type="image/x-icon" />
+		<link rel="apple-touch-icon" sizes="180x180" href="/public/apple-touch-icon.png" />
+		
+		<!-- Tailwind CSS -->
+		<script src="https://cdn.tailwindcss.com"></script>
+		
+		<!-- Phosphor Icons -->
+		<script src="https://unpkg.com/@phosphor-icons/web"></script>
+	</head>
+	<body class="bg-gray-50 text-slate-800 font-sans antialiased">
+		<slot />
+		<Footer />
+		<CartFlyout />
+	</body>
+</html>
+
+<style>
+	html,
+	body {
+		margin: 0;
+		width: 100%;
+		padding: 0;
+	}
+</style>

@@ -1,0 +1,170 @@
+---
+interface Props {
+  title?: string;
+}
+
+const { title = "GambaStore" } = Astro.props;
+---
+
+<nav class="fixed w-full z-50 transition-all duration-500 py-6" id="navbar">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex justify-between items-center h-12">
+      <a href="/" class="flex items-center group cursor-pointer">
+        <span
+          class="font-bold text-2xl tracking-tight text-white nav-text transition-colors"
+        >
+          {title}
+        </span>
+      </a>
+
+      <!-- Agrupamos Menú y Iconos a la derecha -->
+      <div class="flex items-center gap-8">
+        <div class="hidden md:flex items-center space-x-8">
+          <a
+            href="/"
+            class="text-white/90 nav-text hover:text-orange-500 font-medium transition"
+          >
+            Inicio
+          </a>
+          <a
+            href="../productos"
+            class="text-white/90 nav-text hover:text-orange-500 font-medium transition"
+          >
+            Productos
+          </a>
+          <a
+            href="../contacto"
+            class="text-white/90 nav-text hover:text-orange-500 font-medium transition"
+          >
+            Contacto
+          </a>
+        </div>
+
+        <!-- Contenedor Iconos Derecha (Carrito + Menú Móvil) -->
+        <div class="flex items-center gap-4">
+          <!-- Instagram -->
+          <a href="https://www.instagram.com/gambastore_" target="_blank" class="text-white/90 hover:text-orange-500 transition cursor-pointer" aria-label="Síguenos en Instagram">
+            <i class="ph ph-instagram-logo text-2xl"></i>
+          </a>
+
+          <!-- Botón Carrito (Visible siempre) -->
+          <button id="openCartBtn" class="relative text-white/90 hover:text-orange-500 transition cursor-pointer">
+            <i class="ph ph-shopping-cart text-2xl"></i>
+            <span id="cartCount" class="absolute -top-2 -right-2 bg-orange-600 text-white text-[10px] font-bold w-5 h-5 flex items-center justify-center rounded-full opacity-0 transition-opacity">
+              0
+            </span>
+          </button>
+
+          <!-- Botón Menú Hamburguesa (Solo móvil) -->
+          <div class="md:hidden">
+            <button onclick="toggleMobileMenu()" class="text-white nav-text p-2 focus:outline-none transition-colors cursor-pointer">
+              <i id="menuIconOpen" class="ph ph-list text-3xl block cursor-pointer"></i>
+              <i id="menuIconClose" class="ph ph-x text-3xl hidden cursor-pointer"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div
+    id="mobileMenu"
+    class="hidden md:hidden bg-white border-t p-4 space-y-3 shadow-2xl absolute w-full left-0 top-full"
+  >
+    <a
+      href="/"
+      onclick="closeMobileMenu()"
+      class="block text-slate-600 hover:text-orange-600 font-medium py-3 border-b border-gray-100"
+    >
+      Inicio
+    </a>
+    <a
+      href="/productos"
+      onclick="closeMobileMenu()"
+      class="block text-slate-600 hover:text-orange-600 font-medium py-3 border-b border-gray-100"
+    >
+      Productos
+    </a>
+    <a
+      href="/contacto"
+      onclick="closeMobileMenu()"
+      class="block text-slate-600 hover:text-orange-600 font-medium py-3 border-b border-gray-100"
+    >
+      Contacto
+    </a>
+  </div>
+</nav>
+
+<script>
+  function toggleMobileMenu() {
+    const menu = document.getElementById("mobileMenu");
+    const iconOpen = document.getElementById("menuIconOpen");
+    const iconClose = document.getElementById("menuIconClose");
+    if (!menu || !iconOpen || !iconClose) return;
+    
+    menu.classList.toggle("hidden");
+
+    if (menu.classList.contains("hidden")) {
+      iconOpen.classList.remove("hidden");
+      iconClose.classList.add("hidden");
+    } else {
+      iconOpen.classList.add("hidden");
+      iconClose.classList.remove("hidden");
+      iconClose.style.color = "#0f172a";
+    }
+  }
+
+  function closeMobileMenu() {
+    const menu = document.getElementById("mobileMenu");
+    const iconOpen = document.getElementById("menuIconOpen");
+    const iconClose = document.getElementById("menuIconClose");
+    if (!menu || !iconOpen || !iconClose) return;
+    
+    menu.classList.add("hidden");
+    iconOpen.classList.remove("hidden");
+    iconClose.classList.add("hidden");
+  }
+
+  // Lógica de navbar scroll
+  const nav = document.getElementById("navbar");
+  window.addEventListener("scroll", () => {
+    if (!nav) return;
+    if (window.scrollY > 50) {
+      nav.classList.add("nav-scrolled");
+    } else {
+      nav.classList.remove("nav-scrolled");
+    }
+  });
+
+  // Exponer funciones globalmente para botones
+  window.toggleMobileMenu = toggleMobileMenu;
+  window.closeMobileMenu = closeMobileMenu;
+
+  // Lógica del contador del carrito
+  const cartCount = document.getElementById('cartCount');
+  const openCartBtn = document.getElementById('openCartBtn');
+
+  function updateCount() {
+    const cart = JSON.parse(localStorage.getItem('gambaCart') || '[]');
+    if (cartCount) {
+      cartCount.textContent = cart.length.toString();
+      cartCount.classList.toggle('opacity-0', cart.length === 0);
+    }
+  }
+
+  openCartBtn?.addEventListener('click', () => window.dispatchEvent(new Event('openCart')));
+  window.addEventListener('cartUpdated', updateCount);
+  // Inicializar
+  updateCount();
+</script>
+
+<style>
+  /* Estilo para cuando se hace scroll */
+  .nav-scrolled {
+    background-color: rgba(36, 36, 37, 0.85); /* Fondo oscuro translúcido */
+    backdrop-filter: blur(12px); /* Efecto de desenfoque (Glassmorphism) */
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    padding-top: 1rem !important; /* Reducimos un poco el padding para que sea más compacto */
+    padding-bottom: 1rem !important;
+  }
+</style>

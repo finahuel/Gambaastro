@@ -1,0 +1,107 @@
+---
+import Layout1 from '../layouts/layout1.astro';
+import Navbar from '../components/Navbar.astro';
+import WhatsAppButton from '../components/WhatsAppButton.astro';
+---
+
+<Layout1 title="Contacto | Gamba Store">
+  <!-- Fondo oscuro simulado detrás del navbar para contraste -->
+  <div class="absolute top-0 left-0 w-full h-20 bg-gray-900 z-40"></div>
+  <Navbar title="Gamba Store" />
+
+  <main class="pt-24 pb-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+    
+    <!-- Título de la página -->
+    <div class="text-center mb-12">
+      <h1 class="text-4xl font-extrabold tracking-tight text-gray-900 sm:text-5xl">
+        Ponete en Contacto
+      </h1>
+      <p class="mt-4 max-w-2xl mx-auto text-lg text-gray-500">
+        Estamos para ayudarte. Visitá nuestro local o envianos un mensaje.
+      </p>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 xl:gap-16">
+      
+      <!-- Columna Izquierda: Información de Contacto -->
+      <div class="bg-white p-8 rounded-2xl border border-gray-100 shadow-sm">
+        <h2 class="text-2xl font-bold text-gray-900 mb-6">Información</h2>
+        
+        <div class="space-y-6">
+          <!-- Dirección -->
+          <div class="flex items-start gap-4">
+            <div class="flex-shrink-0 w-10 h-10 flex items-center justify-center bg-orange-100 text-orange-600 rounded-lg">
+              <i class="ph ph-map-pin-line text-2xl"></i>
+            </div>
+            <div>
+              <h3 class="text-lg font-semibold text-gray-800">Dirección</h3>
+              <p class="text-gray-600">Av. Lavalle 2221</p>
+              <p class="text-gray-500 text-sm">Posadas, Misiones, Argentina</p>
+            </div>
+          </div>
+
+          <!-- Teléfono -->
+          <div class="flex items-start gap-4">
+            <div class="flex-shrink-0 w-10 h-10 flex items-center justify-center bg-orange-100 text-orange-600 rounded-lg">
+              <i class="ph ph-whatsapp-logo text-2xl"></i>
+            </div>
+            <div>
+              <h3 class="text-lg font-semibold text-gray-800">WhatsApp</h3>
+              <a href="https://wa.me/5493764102637" target="_blank" class="text-gray-600 hover:text-orange-600 transition-colors">+54 9 3764 10-2637</a>
+            </div>
+          </div>
+
+          <!-- Instagram -->
+          <div class="flex items-start gap-4">
+            <div class="flex-shrink-0 w-10 h-10 flex items-center justify-center bg-orange-100 text-orange-600 rounded-lg">
+              <i class="ph ph-instagram-logo text-2xl"></i>
+            </div>
+            <div>
+              <h3 class="text-lg font-semibold text-gray-800">Instagram</h3>
+              <a href="https://www.instagram.com/gambastore_" target="_blank" class="text-gray-600 hover:text-orange-600 transition-colors">Seguinos en @gambastore_</a>
+            </div>
+          </div>
+
+          <!-- Email -->
+          <div class="flex items-start gap-4">
+            <div class="flex-shrink-0 w-10 h-10 flex items-center justify-center bg-orange-100 text-orange-600 rounded-lg">
+              <i class="ph ph-envelope-simple text-2xl"></i>
+            </div>
+            <div>
+              <h3 class="text-lg font-semibold text-gray-800">Email</h3>
+              <a href="mailto:contacto@gambastore.com" class="text-gray-600 hover:text-orange-600 transition-colors">contacto@gambastore.com</a>
+            </div>
+          </div>
+
+          <!-- Horarios -->
+          <div class="flex items-start gap-4">
+            <div class="flex-shrink-0 w-10 h-10 flex items-center justify-center bg-orange-100 text-orange-600 rounded-lg">
+              <i class="ph ph-clock text-2xl"></i>
+            </div>
+            <div>
+              <h3 class="text-lg font-semibold text-gray-800">Horarios de Atención</h3>
+              <p class="text-gray-600">Lunes a Viernes: 9:00 - 18:00 hs</p>
+              <p class="text-gray-600">Sábados: 9:00 - 13:00 hs</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Columna Derecha: Mapa -->
+      <div class="aspect-w-16 aspect-h-9 lg:aspect-none lg:h-full rounded-2xl overflow-hidden border border-gray-100 shadow-sm">
+        <iframe 
+          src="https://www.google.com/maps/embed?pb=!4v1770837292067!6m8!1m7!1s6Vj3Sob4cWLtimIDX-H6rQ!2m2!1d-27.36937407864857!2d-55.90545065717156!3f93.0577956346095!4f-21.567310283819793!5f0.8557237672828326" 
+          class="w-full h-full"
+          style="border:0;" 
+          allowfullscreen="" 
+          loading="lazy" 
+          referrerpolicy="no-referrer-when-downgrade"
+          title="Ubicación de Gamba Store en Google Maps"
+        ></iframe>
+      </div>
+
+    </div>
+  </main>
+
+  <WhatsAppButton phone="5493764102637" message="Hola! Tengo una consulta desde la página de contacto." />
+</Layout1>

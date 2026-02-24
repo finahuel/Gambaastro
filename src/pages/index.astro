@@ -1,0 +1,43 @@
+---
+import Layout1 from '../layouts/layout1.astro';
+import Navbar from '../components/Navbar.astro';
+import Hero from '../components/Hero.astro';
+import Testimonios from '../components/Testimonios.astro';
+import FichaProducto from '../components/FichaProducto.astro';
+import WhatsAppButton from '../components/WhatsAppButton.astro';
+import { getProducts } from '../services/products';
+
+const allProducts = await getProducts();
+// Mostrar solo algunos productos destacados en el inicio, por ejemplo los que están en oferta o los 4 primeros.
+const featuredProducts = allProducts.filter(p => p.precioOferta || p.estado === 'Nuevo').slice(0, 8);
+---
+
+<Layout1 title="Gamba Store | Inicio">
+  <Navbar title="Gamba Store" />
+  
+  <Hero />
+
+  <Testimonios />
+
+  <!-- Sección de Productos Destacados -->
+  <div id="ofertas" class="bg-gray-50 scroll-mt-16">
+    <div class="max-w-7xl mx-auto py-16 px-4 sm:py-24 sm:px-6 lg:px-8 ">
+      <div class="text-center mb-12">
+        <h2 class="text-3xl font-extrabold tracking-tight text-gray-900 sm:text-4xl">
+          Novedades y Ofertas
+        </h2>
+        <p class="mt-4 max-w-2xl mx-auto text-lg text-gray-500">
+          Mirá los últimos lanzamientos y aprovechá nuestras ofertas especiales.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-6">
+        {featuredProducts.map(producto => (
+          <FichaProducto {...producto} />
+        ))}
+      </div>
+    </div>
+  </div>
+
+  <WhatsAppButton />
+</Layout1>

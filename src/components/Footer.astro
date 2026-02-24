@@ -1,0 +1,50 @@
+---
+const currentYear = new Date().getFullYear();
+---
+
+<footer class="bg-gray-900 text-white pt-16 pb-8 border-t border-gray-800">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-12 mb-12">
+      <!-- Columna 1: Marca -->
+      <div>
+        <h3 class="text-2xl font-bold mb-4 text-white">Gamba Store</h3>
+        <p class="text-gray-400 text-sm leading-relaxed max-w-xs">
+          Tu destino número uno para encontrar el mejor estilo. Calidad, tendencias y los mejores precios en un solo lugar.
+        </p>
+      </div>
+
+      <!-- Columna 2: Enlaces -->
+      <div>
+        <h3 class="text-lg font-semibold mb-4 text-orange-500">Navegación</h3>
+        <ul class="space-y-3 text-gray-300 text-sm">
+          <li><a href="/" class="hover:text-white transition-colors">Inicio</a></li>
+          <li><a href="/productos" class="hover:text-white transition-colors">Catálogo Completo</a></li>
+          <li><a href="#contacto" class="hover:text-white transition-colors">Contacto</a></li>
+        </ul>
+      </div>
+
+      <!-- Columna 3: Contacto -->
+      <div>
+        <h3 class="text-lg font-semibold mb-4 text-orange-500">Contacto</h3>
+        <ul class="space-y-4 text-gray-300 text-sm">
+          <li class="flex items-start gap-3">
+            <i class="ph ph-whatsapp-logo text-xl mt-0.5"></i>
+            <span>+54 9 376 410-2637</span>
+          </li>
+          <li class="flex items-start gap-3">
+            <i class="ph ph-envelope text-xl mt-0.5"></i>
+            <span>contacto@gambastore.com</span>
+          </li>
+          <li class="flex items-start gap-3">
+            <i class="ph ph-map-pin text-xl mt-0.5"></i>
+            <span>Argentina</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="border-t border-gray-800 pt-8 text-center text-gray-500 text-sm">
+      <p>&copy; {currentYear} Gamba Store. Todos los derechos reservados.</p>
+    </div>
+  </div>
+</footer>
