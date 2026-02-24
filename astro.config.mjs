@@ -7,7 +7,8 @@ import tailwindcss from '@tailwindcss/vite';
 export default defineConfig({
   site: 'https://finahuel.github.io',
   base: '/Gambaastro/',
-  output: 'static'
-
-  
+  output: 'static',
+  vite: {
+    plugins: [tailwindcss()],
+  },
 });
