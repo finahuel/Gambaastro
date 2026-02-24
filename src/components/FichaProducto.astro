@@ -27,11 +27,13 @@ const precioOfertaFormateado = precioOferta ? new Intl.NumberFormat('es-AR', {
   currency: 'ARS',
   minimumFractionDigits: 0
 }).format(precioOferta) : null;
+
+const productUrl = import.meta.env.BASE_URL + "producto/" + id;
 ---
 
 <article class="group relative flex flex-col overflow-hidden rounded-xl border border-gray-100 bg-white shadow-sm transition-all hover:shadow-lg">
   <div class="relative aspect-square overflow-hidden bg-gray-100">
-    <a href={`/producto/${id}`}>
+    <a href={productUrl}>
       <img 
         src={imagen} 
         alt={`${marca} ${modelo}`} 
@@ -52,7 +54,7 @@ const precioOfertaFormateado = precioOferta ? new Intl.NumberFormat('es-AR', {
   <div class="flex flex-1 flex-col p-4">
     <p class="mb-1 text-xs font-semibold uppercase text-gray-500">{marca}</p>
     <h3 class="mb-2 text-lg font-bold text-gray-900 leading-tight">
-      <a href={`/producto/${id}`} class="hover:text-orange-600 transition-colors">
+      <a href={productUrl} class="hover:text-orange-600 transition-colors">
         {modelo}
       </a>
     </h3>
@@ -88,7 +90,7 @@ const precioOfertaFormateado = precioOferta ? new Intl.NumberFormat('es-AR', {
           <p class="text-xl font-bold text-gray-900">{precioFormateado}</p>
         )}
       </div>
-      <a href={`/producto/${id}`} class="rounded-lg bg-black p-2 text-white transition-colors hover:bg-gray-800" aria-label={`Ver ${marca} ${modelo}`}>
+      <a href={productUrl} class="rounded-lg bg-black p-2 text-white transition-colors hover:bg-gray-800" aria-label={`Ver ${marca} ${modelo}`}>
         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/></svg>
       </a>
     </div>

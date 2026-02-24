@@ -9,7 +9,7 @@ const { title = "GambaStore" } = Astro.props;
 <nav class="fixed w-full z-50 transition-all duration-500 py-6" id="navbar">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
     <div class="flex justify-between items-center h-12">
-      <a href="/" class="flex items-center group cursor-pointer">
+      <a href={import.meta.env.BASE_URL} class="flex items-center group cursor-pointer">
         <span
           class="font-bold text-2xl tracking-tight text-white nav-text transition-colors"
         >
@@ -21,19 +21,19 @@ const { title = "GambaStore" } = Astro.props;
       <div class="flex items-center gap-8">
         <div class="hidden md:flex items-center space-x-8">
           <a
-            href="/"
+            href={import.meta.env.BASE_URL}
             class="text-white/90 nav-text hover:text-orange-500 font-medium transition"
           >
             Inicio
           </a>
           <a
-            href="../productos"
+            href={import.meta.env.BASE_URL + "productos"}
             class="text-white/90 nav-text hover:text-orange-500 font-medium transition"
           >
             Productos
           </a>
           <a
-            href="../contacto"
+            href={import.meta.env.BASE_URL + "contacto"}
             class="text-white/90 nav-text hover:text-orange-500 font-medium transition"
           >
             Contacto
@@ -72,21 +72,21 @@ const { title = "GambaStore" } = Astro.props;
     class="hidden md:hidden bg-white border-t p-4 space-y-3 shadow-2xl absolute w-full left-0 top-full"
   >
     <a
-      href="/"
+      href={import.meta.env.BASE_URL}
       onclick="closeMobileMenu()"
       class="block text-slate-600 hover:text-orange-600 font-medium py-3 border-b border-gray-100"
     >
       Inicio
     </a>
     <a
-      href="/productos"
+      href={import.meta.env.BASE_URL + "productos"}
       onclick="closeMobileMenu()"
       class="block text-slate-600 hover:text-orange-600 font-medium py-3 border-b border-gray-100"
     >
       Productos
     </a>
     <a
-      href="/contacto"
+      href={import.meta.env.BASE_URL + "contacto"}
       onclick="closeMobileMenu()"
       class="block text-slate-600 hover:text-orange-600 font-medium py-3 border-b border-gray-100"
     >

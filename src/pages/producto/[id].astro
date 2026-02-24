@@ -58,9 +58,9 @@ relatedProducts = relatedProducts.slice(0, 4);
     <!-- Breadcrumbs (Migas de Pan) -->
     <nav class="flex mb-8 text-sm text-gray-500" aria-label="Breadcrumb">
       <ol class="inline-flex items-center space-x-1 md:space-x-3">
-        <li class="inline-flex items-center"><a href="/" class="hover:text-orange-600">Inicio</a></li>
+        <li class="inline-flex items-center"><a href={import.meta.env.BASE_URL} class="hover:text-orange-600">Inicio</a></li>
         <li><i class="ph ph-caret-right"></i></li>
-        <li><a href="/productos" class="hover:text-orange-600">Productos</a></li>
+        <li><a href={import.meta.env.BASE_URL + "productos"} class="hover:text-orange-600">Productos</a></li>
         <li><i class="ph ph-caret-right"></i></li>
         <li class="font-medium text-gray-900" aria-current="page">{producto.modelo}</li>
       </ol>
